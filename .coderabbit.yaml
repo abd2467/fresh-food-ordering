@@ -1,0 +1,55 @@
+# CodeRabbit: AI review on every pull request.
+# Reference: https://docs.coderabbit.ai/reference/configuration
+language: "en-US"
+tone_instructions: "The author is learning data analytics and operations research. For each issue, explain in plain words why it matters and how to fix it."
+early_access: false
+
+reviews:
+  profile: "assertive"          # more feedback, because the goal is learning
+  high_level_summary: true
+  review_status: true
+  poem: false
+  collapse_walkthrough: true
+
+  path_filters:
+    - "!data/**"                # raw and processed data are never reviewed
+    - "!floorplan/**"
+
+  path_instructions:
+    - path: "src/**/*.py"
+      instructions: |
+        This is a perishable inventory analysis on FreshRetailNet-50K.
+        - Flag any place where sales during stockout hours are used as true demand.
+        - Check train/test splits are by time, not random.
+        - Check the inventory simulation never lets stock go negative and that expired units are counted as waste.
+        - Check profit calculations state their price and cost assumptions.
+        - Check that every calculation prints a sanity check, as AGENTS.md requires.
+        - Flag hard-coded numbers that should come from the data or from the assumptions config.
+        - Prefer simple, readable pandas over clever code.
+    - path: "notebooks/**"
+      instructions: |
+        Check that every conclusion written in a markdown cell matches the output shown above it.
+        Flag figures that are stated but not computed in the notebook.
+        Flag any claim of cause and effect that the method cannot support.
+    - path: "app/**"
+      instructions: |
+        The dashboard must read only the small result files in data/processed/, never the raw data.
+        Check that every number shown on screen is labelled with its unit and what it assumes.
+    - path: "**/*.md"
+      instructions: |
+        Every figure in a write-up must come from code in this repo or a cited source. Flag numbers with no source.
+
+  auto_review:
+    enabled: true
+    drafts: false
+
+  tools:
+    ruff:
+      enabled: true             # Python linter
+
+chat:
+  auto_reply: true
+
+knowledge_base:
+  code_guidelines:
+    enabled: true

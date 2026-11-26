@@ -1,0 +1,10 @@
+pandas
+numpy
+pyarrow
+datasets
+duckdb
+matplotlib
+scipy
+statsmodels
+jupyter
+streamlit
